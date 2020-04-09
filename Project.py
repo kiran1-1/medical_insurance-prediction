@@ -1,3 +1,6 @@
+import tkinter as tk
+
+
 import pandas as pd
 import numpy as np
 from sklearn.impute import SimpleImputer
@@ -96,3 +99,138 @@ from sklearn.metrics import r2_score
 t_train1=r2_score(y_train,y_train_pred)
 t_test1=r2_score(y_test,y_test_pred)
 print('R2 Score-> Train: %.3f, MSE test: %.3f'%(t_train1,t_test1))
+
+
+
+
+
+# tkinter GUI
+root = tk.Tk()
+
+canvas1 = tk.Canvas(root, width=500, height=400)
+canvas1.pack()
+
+
+# New_Interest_Rate label and input box
+label1 = tk.Label(root, text='Age : ')
+canvas1.create_window(120, 100, window=label1)
+
+entry1 = tk.Entry(root)  # create 1st entry box
+canvas1.create_window(270, 100, window=entry1)
+
+
+label2 = tk.Label(root, text=' Gender: ')
+canvas1.create_window(120, 120, window=label2)
+
+#entry2 = tk.Entry(root)  # create 2nd entry box
+
+entry2 = tk.Radiobutton(root,text='Male',padx=20,value=0).place(x=200,y=110)
+entry2 = tk.Radiobutton(root,text='Female',padx=20,value=1).place(x=300,y=110)
+
+
+#canvas1.create_window(270, 120, window=entry2)
+
+label3 = tk.Label(root, text=' Weight in kg: ')
+canvas1.create_window(120, 140, window=label3)
+
+entry3 = tk.Entry(root)  # create 2nd entry box
+canvas1.create_window(270, 140, window=entry3)
+
+
+label4 = tk.Label(root, text=' Height in cm: ')
+canvas1.create_window(120, 160, window=label4)
+
+entry4 = tk.Entry(root)  # create 2nd entry box
+canvas1.create_window(270, 160, window=entry4)
+
+
+label5 = tk.Label(root, text=' Children: ')
+canvas1.create_window(120, 180, window=label5)
+
+entry5 = tk.Entry(root)  # create 2nd entry box
+canvas1.create_window(270, 180, window=entry5)
+
+
+label6 = tk.Label(root, text=' Smoker: ')
+canvas1.create_window(120, 200, window=label6)
+
+entry6 = tk.Entry(root)  # create 2nd entry box
+canvas1.create_window(270, 200, window=entry6)
+
+label7 = tk.Label(root, text=' Region: ')
+canvas1.create_window(120, 220, window=label7)
+
+#entry7 = tk.Entry(root)  # create 2nd entry box
+entry7 = tk.Radiobutton(root,text='SouthEast',padx=20,value=1).place(x=270,y=215)
+entry7 = tk.Radiobutton(root,text='SouthWest',padx=20,value=2).place(x=270,y=235)
+entry7 = tk.Radiobutton(root,text='NorthEast',padx=20,value=3).place(x=270,y=255)
+entry7 = tk.Radiobutton(root,text='NorthWest',padx=20,value=4).place(x=270,y=275)
+#canvas1.create_window(270, 220, window=entry7)
+
+
+def values():
+    global age_value  # our 1st input variable
+    age_value = float(entry1.get())
+
+    sex_value = 0  # our 2nd input variable
+    if entry2 == 0:
+        sex_value = 0.0
+    elif entry2 == 1:
+        sex_value = 1.0
+
+    global bmi_value  # our 2nd input variable
+    weight = float(entry3.get())
+    height = float(entry4.get())
+    if height==0:
+        height=1
+    bmi_value=weight/(height/100)
+
+    global children_value  # our 2nd input variable
+    children_value = float(entry5.get())
+
+    global smoker_value  # our 2nd input variable
+    smoker = entry6.get()
+    if smoker == "yes":
+        smoker_value = 0
+    else :
+        smoker_value = 1
+    smoker_value = float(smoker_value)
+
+
+    region_value = 0
+    if entry7 == 1:
+        region_value = 1.0
+    elif entry7 == 2:
+        region_value = 2.0
+    elif entry7 == 3:
+        region_value = 3.0
+    elif entry7 == 4:
+        region_value = 4.0
+
+
+
+    global obesity_value
+    if bmi_value >= 30:
+        obesity_value = 1.0
+    else:
+        obesity_value = 0.0
+
+    ready_value = [age_value, sex_value, bmi_value, children_value, smoker_value, region_value, obesity_value]
+
+    pr1 = lr.predict([ready_value])
+    pr2 = forest.predict([ready_value])
+    pr = (pr1+pr2)/2
+    pr = abs(pr)
+
+    Prediction_result = ('Predicted Cost of Insurance: ', pr)
+    label_Prediction = tk.Label(root, text=Prediction_result,font = "Helvetica 9 bold italic",fg='light green', bg='teal')
+    canvas1.create_window(320, 350, window=label_Prediction)
+
+
+button1 = tk.Button(root, text='Predict Insurance Cost', command=values,
+                    bg='teal')  # button to call the 'values' command above
+canvas1.create_window(100, 350, window=button1)
+label_main = tk.Label(root,text="Insurance Cost Prediction Tool",fg='light green',font = "Helvetica 16 bold italic",bg='teal')
+canvas1.create_window(250,35,window=label_main)
+
+root.mainloop()
